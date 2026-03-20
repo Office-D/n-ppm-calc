@@ -30,9 +30,9 @@ describe('App', () => {
   it('ppm算出モードで計算結果が表示される', async () => {
     render(<App />)
     const nInput = screen.getByPlaceholderText('233.5')
-    await userEvent.clear(nInput)
+    const wInput = screen.getByPlaceholderText('4000')
     await userEvent.type(nInput, '400')
-    // 水量はデフォルト4000
+    await userEvent.type(wInput, '4000')
     expect(screen.getByText('100.0')).toBeInTheDocument()
   })
 })
