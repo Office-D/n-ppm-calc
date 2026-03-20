@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { calcPpm, calcNitrogenNeeded, calcGap, calcFertilizerPpm, calcDripWater, calcSprinklerWater, fmt } from '../utils/calc'
+import { calcPpm, calcNitrogenNeeded, calcGap, calcFertilizerPpm, calcDilution, calcDripWater, calcSprinklerWater, fmt } from '../utils/calc'
 
 describe('calcPpm', () => {
   it('233.5g / 4000L = 58.375 ppm', () => {
@@ -34,6 +34,24 @@ describe('calcFertilizerPpm', () => {
   })
   it('1.5kg × 10% / 4000L = 37.5 ppm', () => {
     expect(calcFertilizerPpm(1.5, 10, 4000)).toBeCloseTo(37.5, 2)
+  })
+})
+
+describe('calcDilution', () => {
+  it('N10% × 1000倍 = 100ppm, 4000Lなら液肥4L', () => {
+    const r = calcDilution(10, 1000, 4000)
+    expect(r.ppm).toBe(100)
+    expect(r.fertLiters).toBe(4)
+  })
+  it('N5% × 500倍 = 100ppm, 2000Lなら液肥4L', () => {
+    const r = calcDilution(5, 500, 2000)
+    expect(r.ppm).toBe(100)
+    expect(r.fertLiters).toBe(4)
+  })
+  it('N8% × 200倍 = 400ppm, 4000Lなら液肥20L', () => {
+    const r = calcDilution(8, 200, 4000)
+    expect(r.ppm).toBe(400)
+    expect(r.fertLiters).toBe(20)
   })
 })
 

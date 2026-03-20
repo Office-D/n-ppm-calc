@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import InputField from "../InputField";
 import StepLine from "../StepLine";
 import ClearButton from "../ClearButton";
+import PdfButton from "../PdfButton";
 import { fmt, calcDripWater, calcSprinklerWater } from "../../utils/calc";
 
 const TUBE_TYPES = [
@@ -199,38 +200,54 @@ function SprinklerInputs({ values, onChange, onApplyWater }) {
 }
 
 export default function ModeWater({ values, onChange, onClear, onApplyWater }) {
+  const pdfRef = useRef(null);
   const { tubeType, drip, sprinkler } = values;
 
   const setTubeType = (t) => onChange({ ...values, tubeType: t });
   const setDrip = (d) => onChange({ ...values, drip: d });
   const setSprinkler = (s) => onChange({ ...values, sprinkler: s });
 
+  const hasDripResult = tubeType === "drip" && (() => {
+    const d = drip;
+    return parseFloat(d.emitterFlow) > 0 && parseFloat(d.emitterPitch) > 0 && parseFloat(d.rowLength) > 0 && parseFloat(d.linesPerRow) > 0 && parseFloat(d.rowCount) > 0 && parseFloat(d.duration) > 0;
+  })();
+  const hasSprinklerResult = tubeType === "sprinkler" && (() => {
+    const s = sprinkler;
+    return parseFloat(s.flowPerM) > 0 && parseFloat(s.rowLength) > 0 && parseFloat(s.linesPerRow) > 0 && parseFloat(s.rowCount) > 0 && parseFloat(s.duration) > 0;
+  })();
+  const hasResult = hasDripResult || hasSprinklerResult;
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-        {TUBE_TYPES.map(t => (
-          <button
-            key={t.id}
-            onClick={() => setTubeType(t.id)}
-            style={{
-              padding: "10px 6px", border: "none", borderRadius: 8, cursor: "pointer",
-              background: tubeType === t.id ? "#1565c0" : "#f0f0f0",
-              color: tubeType === t.id ? "#fff" : "#666",
-              boxShadow: tubeType === t.id ? "0 2px 6px rgba(21,101,192,0.3)" : "none",
-              fontWeight: 700, fontSize: 13, transition: "all 0.2s",
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 4,
-              minHeight: 44,
-            }}
-          >
-            <span style={{ fontSize: 16 }}>{t.icon}</span>{t.label}
-          </button>
-        ))}
-      </div>
+      <div ref={pdfRef}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+          {TUBE_TYPES.map(t => (
+            <button
+              key={t.id}
+              onClick={() => setTubeType(t.id)}
+              style={{
+                padding: "10px 6px", border: "none", borderRadius: 8, cursor: "pointer",
+                background: tubeType === t.id ? "#1565c0" : "#f0f0f0",
+                color: tubeType === t.id ? "#fff" : "#666",
+                boxShadow: tubeType === t.id ? "0 2px 6px rgba(21,101,192,0.3)" : "none",
+                fontWeight: 700, fontSize: 13, transition: "all 0.2s",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 4,
+                minHeight: 44,
+              }}
+            >
+              <span style={{ fontSize: 16 }}>{t.icon}</span>{t.label}
+            </button>
+          ))}
+        </div>
 
-      {tubeType === "drip"
-        ? <DripInputs values={drip} onChange={setDrip} onApplyWater={onApplyWater} />
-        : <SprinklerInputs values={sprinkler} onChange={setSprinkler} onApplyWater={onApplyWater} />
-      }
+        <div style={{ marginTop: 14 }}>
+          {tubeType === "drip"
+            ? <DripInputs values={drip} onChange={setDrip} onApplyWater={onApplyWater} />
+            : <SprinklerInputs values={sprinkler} onChange={setSprinkler} onApplyWater={onApplyWater} />
+          }
+        </div>
+      </div>
+      {hasResult && <PdfButton targetRef={pdfRef} title="灌水量" />}
       <ClearButton onClear={onClear} />
     </div>
   );

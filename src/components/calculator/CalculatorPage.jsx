@@ -4,6 +4,7 @@ import ModeReverse from "./ModeReverse";
 import ModeGap from "./ModeGap";
 import ModeFertilizer from "./ModeFertilizer";
 import ModeWater from "./ModeWater";
+import ModeDilution from "./ModeDilution";
 
 const DEFAULT_WATER = "";
 
@@ -12,6 +13,7 @@ const CALC_MODES = [
   { id: "reverse", label: "逆算", icon: "⟵" },
   { id: "gap", label: "不足分", icon: "△" },
   { id: "fertilizer", label: "肥料換算", icon: "⚗" },
+  { id: "dilution", label: "希釈倍数", icon: "÷" },
   { id: "water", label: "灌水量", icon: "💧" },
 ];
 
@@ -30,6 +32,7 @@ export default function CalculatorPage({ sharedWater, setSharedWater, reverseTar
   }, [reverseTarget]);
   const [gapState, setGapState] = useState({ currentN: "", targetPpm: "", w: DEFAULT_WATER });
   const [fertState, setFertState] = useState({ fw: "", np: "", w: DEFAULT_WATER });
+  const [dilutionState, setDilutionState] = useState({ np: "", dilution: "", w: DEFAULT_WATER });
   const [waterState, setWaterState] = useState({
     tubeType: "drip",
     drip: { emitterFlow: "", emitterPitch: "20", rowLength: "", linesPerRow: "1", rowCount: "", duration: "" },
@@ -43,6 +46,7 @@ export default function CalculatorPage({ sharedWater, setSharedWater, reverseTar
     setReverseState(s => ({ ...s, w: rounded }));
     setGapState(s => ({ ...s, w: rounded }));
     setFertState(s => ({ ...s, w: rounded }));
+    setDilutionState(s => ({ ...s, w: rounded }));
   };
 
   return (
@@ -110,6 +114,13 @@ export default function CalculatorPage({ sharedWater, setSharedWater, reverseTar
             onChange={setFertState}
             onClear={() => setFertState({ fw: "", np: "", w: DEFAULT_WATER })}
             onNavigateCrops={onNavigateCrops}
+          />
+        )}
+        {calcMode === "dilution" && (
+          <ModeDilution
+            values={dilutionState}
+            onChange={setDilutionState}
+            onClear={() => setDilutionState({ np: "", dilution: "", w: DEFAULT_WATER })}
           />
         )}
         {calcMode === "water" && (

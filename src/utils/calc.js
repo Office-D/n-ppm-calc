@@ -50,6 +50,19 @@ export function calcSprinklerWater(flowPerM, rowLength, linesPerRow, rowCount, d
   return { totalLength, flowPerHour, totalWater };
 }
 
+/**
+ * 液肥の希釈倍数から ppm・必要液肥量を計算
+ * @param {number} nPercent - 液肥のN濃度 (%)
+ * @param {number} dilution - 希釈倍数
+ * @param {number} waterLiters - 水量 (L)
+ * @returns {{ ppm: number, fertLiters: number }}
+ */
+export function calcDilution(nPercent, dilution, waterLiters) {
+  const ppm = (nPercent * 10000) / dilution;
+  const fertLiters = waterLiters / dilution;
+  return { ppm, fertLiters };
+}
+
 export function fmt(n, d = 1) {
   if (n === null || n === undefined || isNaN(n)) return "—";
   return Number(n).toLocaleString("ja-JP", {
