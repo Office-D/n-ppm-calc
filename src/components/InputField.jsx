@@ -1,6 +1,6 @@
 export default function InputField({ label, value, onChange, unit, placeholder }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 4, minWidth: 0 }}>
       <label style={{ fontSize: 13, fontWeight: 600, color: "#444", letterSpacing: 0.3 }}>
         {label}
       </label>
