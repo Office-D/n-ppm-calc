@@ -51,6 +51,12 @@ export default function App() {
             <GuidePage />
           </div>
         </div>
+        <div style={{
+          textAlign: "center", marginTop: 24, fontSize: 10,
+          color: "#ccc", letterSpacing: 0.5,
+        }}>
+          Office-D
+        </div>
       </div>
     </div>
   );
