@@ -4,7 +4,7 @@ import PpmAlert from "../PpmAlert";
 import ClearButton from "../ClearButton";
 import { fmt } from "../../utils/calc";
 
-export default function ModeCalc({ values, onChange, onClear }) {
+export default function ModeCalc({ values, onChange, onClear, onNavigateCrops }) {
   const { n, w } = values;
   const set = (key, val) => onChange({ ...values, [key]: val });
 
@@ -40,6 +40,18 @@ export default function ModeCalc({ values, onChange, onClear }) {
             → 水1Lあたり約 <strong>{fmt(ppm)}</strong> mg の窒素が溶けている状態
           </div>
           <PpmAlert ppm={ppm} />
+          {onNavigateCrops && (
+            <button
+              onClick={onNavigateCrops}
+              style={{
+                padding: "10px 14px", border: "1px solid rgba(46,125,50,0.3)", borderRadius: 8,
+                background: "#f1f8e9", color: "#2e7d32", fontSize: 13, fontWeight: 600,
+                cursor: "pointer", textAlign: "left", lineHeight: 1.5,
+              }}
+            >
+              🌱 「作物目安」タブで適正範囲を確認 →
+            </button>
+          )}
         </div>
       )}
       <ClearButton onClear={onClear} />

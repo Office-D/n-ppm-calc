@@ -65,7 +65,7 @@ function DripInputs({ values, onChange, onApplyWater }) {
         fontSize: 12, color: "#888", background: "#f5f5f0",
         padding: "10px 12px", borderRadius: 6, lineHeight: 1.6,
       }}>
-        点滴チューブ：一定間隔のエミッターから水を滴下。カタログ記載の吐出量(L/h)とピッチ(cm)を入力。
+        点滴チューブ：一定間隔のエミッターから水を滴下。カタログ記載の吐出量(L/h)とピッチ(cm)を入力。「1畝あたり本数」は畝の片側1本なら1、両側なら2。
       </div>
 
       <div style={{ fontSize: 11, fontWeight: 700, color: "#999", letterSpacing: 0.5 }}>チューブ仕様</div>
@@ -80,7 +80,7 @@ function DripInputs({ values, onChange, onApplyWater }) {
         <InputField label="畝数" value={rowCount} onChange={v => set("rowCount", v)} unit="畝" placeholder="20" />
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-        <InputField label="チューブ本数" value={linesPerRow} onChange={v => set("linesPerRow", v)} unit="本/畝" placeholder="1" />
+        <InputField label="1畝あたり本数" value={linesPerRow} onChange={v => set("linesPerRow", v)} unit="本" placeholder="1" />
         <InputField label="灌水時間" value={duration} onChange={v => set("duration", v)} unit="分" placeholder="30" />
       </div>
 
@@ -145,7 +145,7 @@ function SprinklerInputs({ values, onChange, onApplyWater }) {
         fontSize: 12, color: "#888", background: "#f5f5f0",
         padding: "10px 12px", borderRadius: 6, lineHeight: 1.6,
       }}>
-        灌水チューブ：チューブ全体から霧状に散水。カタログ記載の散水量(L/h/m)を入力。
+        灌水チューブ：チューブ全体から霧状に散水。カタログ記載の散水量(L/h/m)を入力。「1畝あたり本数」は畝の片側1本なら1、両側なら2。
       </div>
 
       <div style={{ fontSize: 11, fontWeight: 700, color: "#999", letterSpacing: 0.5 }}>チューブ仕様</div>
@@ -157,7 +157,7 @@ function SprinklerInputs({ values, onChange, onApplyWater }) {
         <InputField label="畝数" value={rowCount} onChange={v => set("rowCount", v)} unit="畝" placeholder="20" />
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-        <InputField label="チューブ本数" value={linesPerRow} onChange={v => set("linesPerRow", v)} unit="本/畝" placeholder="1" />
+        <InputField label="1畝あたり本数" value={linesPerRow} onChange={v => set("linesPerRow", v)} unit="本" placeholder="1" />
         <InputField label="灌水時間" value={duration} onChange={v => set("duration", v)} unit="分" placeholder="30" />
       </div>
 

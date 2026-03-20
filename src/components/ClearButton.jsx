@@ -1,15 +1,30 @@
+import { useState } from "react";
+
 export default function ClearButton({ onClear }) {
+  const [confirming, setConfirming] = useState(false);
+
+  const handleClick = () => {
+    if (confirming) {
+      onClear();
+      setConfirming(false);
+    } else {
+      setConfirming(true);
+      setTimeout(() => setConfirming(false), 3000);
+    }
+  };
+
   return (
     <button
-      onClick={onClear}
+      onClick={handleClick}
       style={{
-        padding: "10px 18px", border: "1px solid #ddd", borderRadius: 6,
-        background: "#fafafa", color: "#666", fontSize: 13, fontWeight: 600,
+        padding: "6px 14px", border: "1px solid #ddd", borderRadius: 6,
+        background: confirming ? "#fff3e0" : "#fafafa",
+        color: confirming ? "#e65100" : "#999",
+        fontSize: 12, fontWeight: 600,
         cursor: "pointer", transition: "all 0.15s", alignSelf: "flex-end",
-        minHeight: 44,
       }}
     >
-      クリア
+      {confirming ? "タップでクリア" : "クリア"}
     </button>
   );
 }

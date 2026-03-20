@@ -10,6 +10,12 @@ const DEFAULT_WATER = "";
 export default function App() {
   const [page, setPage] = useState("calculator");
   const [sharedWater, setSharedWater] = useState(DEFAULT_WATER);
+  const [reverseTarget, setReverseTarget] = useState(null);
+
+  const handleCalcWithPpm = (ppm) => {
+    setReverseTarget({ ppm, ts: Date.now() });
+    setPage("calculator");
+  };
 
   return (
     <div style={{
@@ -25,7 +31,7 @@ export default function App() {
         <PageTabs active={page} onChange={setPage} />
 
         <div style={{ display: page === "calculator" ? "block" : "none" }}>
-          <CalculatorPage sharedWater={sharedWater} setSharedWater={setSharedWater} />
+          <CalculatorPage sharedWater={sharedWater} setSharedWater={setSharedWater} reverseTarget={reverseTarget} onNavigateCrops={() => setPage("crops")} />
         </div>
 
         <div style={{ display: page === "crops" ? "block" : "none" }}>
@@ -33,7 +39,7 @@ export default function App() {
             background: "#fff", borderRadius: 16, padding: 20,
             boxShadow: "0 2px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04)",
           }}>
-            <CropReferencePage />
+            <CropReferencePage onCalcWithPpm={handleCalcWithPpm} />
           </div>
         </div>
 

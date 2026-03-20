@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { CROP_DATA } from "../../data/cropData";
 
-export default function CropReferencePage() {
+function parseRangeMid(range) {
+  const nums = range.replace(/[〜~]/g, "-").split("-").map(Number);
+  if (nums.length === 2 && nums.every(n => !isNaN(n))) return Math.round((nums[0] + nums[1]) / 2);
+  return nums[0] || null;
+}
+
+export default function CropReferencePage({ onCalcWithPpm }) {
   const [sel, setSel] = useState(null);
   const crop = CROP_DATA.find(c => c.id === sel);
 
@@ -83,7 +89,22 @@ export default function CropReferencePage() {
                     {r.label}
                   </span>
                 </div>
-                <div style={{ fontSize: 12, color: "#666", marginTop: 4 }}>{r.desc}</div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 4, gap: 8 }}>
+                  <span style={{ fontSize: 12, color: "#666" }}>{r.desc}</span>
+                  {onCalcWithPpm && (
+                    <button
+                      onClick={() => onCalcWithPpm(parseRangeMid(r.range))}
+                      style={{
+                        padding: "4px 10px", border: "1px solid #2e7d32", borderRadius: 6,
+                        background: "#fff", color: "#2e7d32", fontSize: 11, fontWeight: 700,
+                        cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0,
+                        minHeight: 28,
+                      }}
+                    >
+                      逆算
+                    </button>
+                  )}
+                </div>
               </div>
             );
           })}

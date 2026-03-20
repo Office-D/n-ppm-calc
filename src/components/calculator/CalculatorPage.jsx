@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ModeCalc from "./ModeCalc";
 import ModeReverse from "./ModeReverse";
 import ModeGap from "./ModeGap";
@@ -15,12 +15,19 @@ const CALC_MODES = [
   { id: "water", label: "灌水量", icon: "💧" },
 ];
 
-export default function CalculatorPage({ sharedWater, setSharedWater }) {
+export default function CalculatorPage({ sharedWater, setSharedWater, reverseTarget, onNavigateCrops }) {
   const [calcMode, setCalcMode] = useState("calc");
 
   // 各モードの入力state（CalculatorPageで保持するので切替時に消えない）
   const [calcState, setCalcState] = useState({ n: "", w: DEFAULT_WATER });
   const [reverseState, setReverseState] = useState({ ppm: "", w: DEFAULT_WATER });
+
+  useEffect(() => {
+    if (reverseTarget) {
+      setCalcMode("reverse");
+      setReverseState(s => ({ ...s, ppm: String(reverseTarget.ppm) }));
+    }
+  }, [reverseTarget]);
   const [gapState, setGapState] = useState({ currentN: "", targetPpm: "", w: DEFAULT_WATER });
   const [fertState, setFertState] = useState({ fw: "", np: "", w: DEFAULT_WATER });
   const [waterState, setWaterState] = useState({
@@ -68,11 +75,19 @@ export default function CalculatorPage({ sharedWater, setSharedWater }) {
         background: "#fff", borderRadius: 16, padding: 20,
         boxShadow: "0 2px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04)",
       }}>
+        <div style={{
+          fontSize: 11, color: "#999", background: "#f5f5f0",
+          padding: "5px 10px", borderRadius: 6, marginBottom: 14,
+          textAlign: "center", fontWeight: 600,
+        }}>
+          すべての値は <strong style={{ color: "#666" }}>10aあたり</strong> で計算しています
+        </div>
         {calcMode === "calc" && (
           <ModeCalc
             values={calcState}
             onChange={setCalcState}
             onClear={() => setCalcState({ n: "", w: DEFAULT_WATER })}
+            onNavigateCrops={onNavigateCrops}
           />
         )}
         {calcMode === "reverse" && (
@@ -94,6 +109,7 @@ export default function CalculatorPage({ sharedWater, setSharedWater }) {
             values={fertState}
             onChange={setFertState}
             onClear={() => setFertState({ fw: "", np: "", w: DEFAULT_WATER })}
+            onNavigateCrops={onNavigateCrops}
           />
         )}
         {calcMode === "water" && (

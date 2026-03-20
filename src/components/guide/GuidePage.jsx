@@ -62,11 +62,31 @@ export default function GuidePage() {
         </div>
       </Section>
 
-      <Section title="4つの計算モード">
+      <Section title="5つの計算モード">
         <ModeDescription icon="⟶" t="ppm算出" d="窒素量(g)と水量(L)→ppmを算出" />
         <ModeDescription icon="⟵" t="逆算" d="目標ppmと水量→必要窒素量(g)" />
         <ModeDescription icon="△" t="不足分" d="現在N量から目標ppmへの差分" />
         <ModeDescription icon="⚗" t="肥料換算" d="肥料kg・N%→窒素量→ppm" />
+        <ModeDescription icon="💧" t="灌水量" d="点滴チューブ・灌水チューブの仕様から1回の灌水量(L)を算出。結果を他モードの水量に反映可能" />
+      </Section>
+
+      <Section title="灌水量モードの使い方">
+        <p>灌水チューブの仕様と圃場情報から、1回あたりの灌水量(L)を計算します。</p>
+        <div style={{
+          background: "#e3f2fd", padding: 12, borderRadius: 8,
+          fontSize: 13, lineHeight: 1.8, marginTop: 8,
+        }}>
+          <strong>点滴チューブの場合：</strong><br/>
+          カタログに記載の「吐出量(L/h)」と「エミッター間隔(cm)」を入力。畝の長さ・畝数・チューブ本数（1畝に何本チューブを敷設しているか）・灌水時間を指定すると総灌水量を算出します。
+        </div>
+        <div style={{
+          background: "#e3f2fd", padding: 12, borderRadius: 8,
+          fontSize: 13, lineHeight: 1.8, marginTop: 8,
+        }}>
+          <strong>灌水チューブの場合：</strong><br/>
+          カタログに記載の「散水量(L/h/m)」を入力。同様に畝情報と灌水時間を指定します。
+        </div>
+        <p style={{ marginTop: 8 }}>算出した灌水量は「各モードの水量に反映」ボタンで、他の計算モードの水量欄に自動入力できます。</p>
       </Section>
 
       <Section title="注意事項">
