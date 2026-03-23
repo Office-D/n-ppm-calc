@@ -36,7 +36,7 @@ export default function CalculatorPage({ sharedWater, setSharedWater, reverseTar
   const [waterState, setWaterState] = useState({
     tubeType: "drip",
     drip: { emitterFlow: "", emitterPitch: "20", rowLength: "", linesPerRow: "1", rowCount: "", duration: "" },
-    sprinkler: { flowPerM: "", rowLength: "", linesPerRow: "1", rowCount: "", duration: "" },
+    sprinkler: { flowPerM: "", flowUnit: "min", rowLength: "", linesPerRow: "1", rowCount: "", duration: "" },
   });
 
   const handleApplyWater = (totalWater) => {
@@ -130,7 +130,7 @@ export default function CalculatorPage({ sharedWater, setSharedWater, reverseTar
             onClear={() => setWaterState({
               tubeType: waterState.tubeType,
               drip: { emitterFlow: "", emitterPitch: "20", rowLength: "", linesPerRow: "1", rowCount: "", duration: "" },
-              sprinkler: { flowPerM: "", rowLength: "", linesPerRow: "1", rowCount: "", duration: "" },
+              sprinkler: { flowPerM: "", flowUnit: "min", rowLength: "", linesPerRow: "1", rowCount: "", duration: "" },
             })}
             onApplyWater={handleApplyWater}
           />

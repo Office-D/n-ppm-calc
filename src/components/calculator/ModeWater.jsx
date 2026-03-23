@@ -128,8 +128,13 @@ function DripInputs({ values, onChange, onApplyWater }) {
   );
 }
 
+const FLOW_UNITS = [
+  { id: "min", label: "L/分/m", desc: "散水型（スミサンスイ等）" },
+  { id: "hour", label: "L/時/m", desc: "点滴型・設計値" },
+];
+
 function SprinklerInputs({ values, onChange, onApplyWater }) {
-  const { flowPerM, rowLength, linesPerRow, rowCount, duration } = values;
+  const { flowPerM, flowUnit = "min", rowLength, linesPerRow, rowCount, duration } = values;
   const set = (key, val) => onChange({ ...values, [key]: val });
 
   const fm = parseFloat(flowPerM);
@@ -137,8 +142,16 @@ function SprinklerInputs({ values, onChange, onApplyWater }) {
   const lr = parseFloat(linesPerRow);
   const rc = parseFloat(rowCount);
   const du = parseFloat(duration);
-  const valid = fm > 0 && rl > 0 && lr > 0 && rc > 0 && du > 0;
-  const result = valid ? calcSprinklerWater(fm, rl, lr, rc, du) : null;
+
+  // 内部は L/h/m に正規化
+  const fmPerHour = fm > 0 ? (flowUnit === "min" ? fm * 60 : fm) : NaN;
+  const valid = fmPerHour > 0 && rl > 0 && lr > 0 && rc > 0 && du > 0;
+  const result = valid ? calcSprinklerWater(fmPerHour, rl, lr, rc, du) : null;
+
+  // 換算表示用
+  const converted = fm > 0
+    ? (flowUnit === "min" ? `${fmt(fm * 60)} L/時/m` : `${fmt(fm / 60, 3)} L/分/m`)
+    : null;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -146,11 +159,45 @@ function SprinklerInputs({ values, onChange, onApplyWater }) {
         fontSize: 12, color: "#888", background: "#f5f5f0",
         padding: "10px 12px", borderRadius: 6, lineHeight: 1.6,
       }}>
-        灌水チューブ：チューブ全体から霧状に散水。カタログ記載の散水量(L/h/m)を入力。「1畝あたり本数」は畝の片側1本なら1、両側なら2。
+        灌水チューブ：チューブ全体から霧状に散水。カタログの表記どおりに散水量を入力してください。「1畝あたり本数」は畝の片側1本なら1、両側なら2。
       </div>
 
       <div style={{ fontSize: 11, fontWeight: 700, color: "#999", letterSpacing: 0.5 }}>チューブ仕様</div>
-      <InputField label="散水量" value={flowPerM} onChange={v => set("flowPerM", v)} unit="L/h/m" placeholder="4.0" />
+
+      <div style={{ display: "flex", gap: 4 }}>
+        {FLOW_UNITS.map(u => (
+          <button
+            key={u.id}
+            onClick={() => set("flowUnit", u.id)}
+            style={{
+              flex: 1, padding: "7px 4px", border: "none", borderRadius: 6, cursor: "pointer",
+              background: flowUnit === u.id ? "#e3f2fd" : "#f5f5f5",
+              color: flowUnit === u.id ? "#1565c0" : "#888",
+              fontWeight: flowUnit === u.id ? 700 : 400,
+              fontSize: 12, transition: "all 0.15s",
+              outline: flowUnit === u.id ? "2px solid #1565c0" : "1px solid #e0e0e0",
+            }}
+          >
+            <div>{u.label}</div>
+            <div style={{ fontSize: 10, fontWeight: 400, marginTop: 2 }}>{u.desc}</div>
+          </button>
+        ))}
+      </div>
+
+      <div>
+        <InputField
+          label="散水量"
+          value={flowPerM}
+          onChange={v => set("flowPerM", v)}
+          unit={flowUnit === "min" ? "L/分/m" : "L/時/m"}
+          placeholder={flowUnit === "min" ? "0.8" : "4.0"}
+        />
+        {converted && (
+          <div style={{ fontSize: 11, color: "#1565c0", marginTop: 4, paddingLeft: 4 }}>
+            = {converted}
+          </div>
+        )}
+      </div>
 
       <div style={{ fontSize: 11, fontWeight: 700, color: "#999", letterSpacing: 0.5, marginTop: 4 }}>畝情報</div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
@@ -175,7 +222,9 @@ function SprinklerInputs({ values, onChange, onApplyWater }) {
           />
           <StepLine
             label="時間あたり流量"
-            formula={`${fmt(result.totalLength, 0)} m × ${fmt(fm)} L/h/m`}
+            formula={flowUnit === "min"
+              ? `${fmt(result.totalLength, 0)} m × ${fmt(fm)} L/分/m × 60`
+              : `${fmt(result.totalLength, 0)} m × ${fmt(fm)} L/時/m`}
             result={fmt(result.flowPerHour, 0)}
             unit="L/h"
           />
